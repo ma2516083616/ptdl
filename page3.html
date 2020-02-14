@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>故障模型</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/jquery.ui.all.css"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/daterangepicker-bs3.css"/>
+	<link rel="stylesheet" type="text/css" href="bootstrap-fileinput/css/fileinput.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/styles.css"/>
+	<link rel="stylesheet" type="text/css" href="css/htmleaf-demo.css"/>
+	<link rel="stylesheet" type="text/css" href="css/tableexport.css"/>
+	<script src="script/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="script/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+	<script src="script/bootstrap-datetimepicker.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="script/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="script/echarts.js" type="text/javascript" charset="utf-8"></script>
+	<script src="script/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	
+</head>
+<body>
+    <!--#18bc9c-->
+	<div class="body">
+		<ul class="nav nav-pills">
+			<li><a href="index.html">状态模型训练</a></li>
+			<li><a href="page2.html">状态分析预测</a></li>
+			<li class="active"><a href="">故障模型训练</a></li>
+			<li><a href="page4.html">故障辅助诊断</a></li>
+		</ul>
+		<div class="container">
+			<div class="sectwo">
+				<div class="check_select">
+					<span style="display: flex;width: auto;margin-left: 1%;">训练数据:</span>
+					<form id="uploadForm" enctype="multipart/form-data" method="post" class="form-group" style="margin-left: 5px;flex: 0.3;">
+						<input id="file" type="file" name="file_name" />
+					</form>	
+					<!-- <div class="form-group" style="flex: 0.7;">
+						<label for="exampleInputPassword1">训练数据</label>
+							
+							<select name="" class="form-control" style="width: 152px" id='model3' >
+								<option value="diagnose_train.csv">diagnose_train.csv</option>
+								<option value="diagnose_test.csv">diagnose_test.csv</option>
+							</select>
+						
+					</div> -->
+					<div class="form-group">
+						<label for="exampleInputPassword1">类别数</label>
+						<input type="text" id='input_size' disabled="disabled" value="9" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;text-align: center;">
+					</div>
+					<div class="form-group" >
+						<label for="exampleInputPassword1">网络深度</label>
+							<input type="text" id='max_depth' value="9" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;text-align: center;">
+					</div>
+					
+					<div class="form-group">
+						<label for="exampleInputPassword1">迭代次数</label>
+							
+							<select name="" class="form-control" id='train_num'>
+								<option value="6">6</option>
+								<option value="20">20</option>
+								<option value="100">100</option>
+								<option value="500">500</option>
+								<option value="1000">1000</option>
+								<option value="2000">2000</option>
+								<option value="3000">3000</option>
+								<option value="5000">5000</option>
+							</select>
+						
+					</div>
+					<div class="start_byq"  style="flex: 0.2;">
+						<button class=" btn btn-small btn-success" id='btn3' style="width:auto;">开始训练</button>
+					</div>
+					<div class="start_byq"  style="flex: 0.2;">
+						<button class=" btn btn-small btn-success" id='save_model' style="width: auto;">保存模型</button>
+					</div>
+					
+					
+				</div>
+				<div class="result_box" style="position: relative;">
+					<!-- <p class="box_title">模型训练结果</p>
+					<hr /> -->
+					<img id="loding" src="img/loading.gif" />
+
+					<button id='load'  title="导出结果" alt="导出结果" style='border-radius: 4px;'>导出结果</button>
+
+					<div class="result-pic3" id='result-pic3' >
+						
+					</div>
+				</div>
+			</div>
+			<!--  -->
+			
+		</div>
+		<!-- 隐藏部分 -->
+		<div class="cover">
+			<img src='img/x.png' style='display:block;width:10%;right:0;top:0;cursor:pointer;position: absolute;' />
+			<p style="display:flex;justify-content: center;margin-top: 20px;font-size: 16px;">文件格式选择</p>
+		</div>
+		<table  id="Population-list-1"  class="table table-striped table-bordered" data-name="cool-table">
+			<tbody >
+				
+			</tbody>
+		</table>
+	</div>
+	
+
+    
+</body>
+	<script> document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script>
+	<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
+	<script src="script/xlsx.core.min.js"></script>
+	<script src="script/blob.js"></script>
+	<script src="script/FileSaver.min.js"></script>
+	<script src="script/tableexport.js"></script>
+	<script src="script/config.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var formData= new FormData();
+		formData.append("file_name",'');
+		formData.append("max_depth",'');
+		formData.append("num_class",'');
+		formData.append("num_round",'');
+		var url='';
+		var file_name=""
+		var files_na=''
+		$("#file").change(function(){
+			
+			if($("#file").val()!=''){
+				event.preventDefault();
+				digResult($(this)[0].files[0])
+			}
+			$("#load_img").css("display","none")
+		})
+
+		
+		function digResult(file_name){
+			console.log(file_name);
+			var max_depth=$("#max_depth").val();
+			var num_class=$("#input_size").val();
+			var num_round =$("#train_num").val();
+		
+			saveModel2();
+			function saveModel2(){
+				$("#save_model").click(function(){
+					var params;
+					params=file_name.name+'_'+num_class+'_'+max_depth+'_'+$("#train_num").val();
+					window.open('http://106.54.23.150:8083/dvaProject/core/export/'+params)
+					
+				})
+			}
+			$("#btn3").click(function(){
+				formData.append('file_name', file_name);
+				formData.set("max_depth",max_depth);
+				formData.set("num_class",num_class);
+				formData.set("num_round",$("#train_num").val());
+				$("#loding").css("display","block");
+				
+				$.ajax({
+					type:'post',
+					url:rootUrl+'core/fdp/udf',
+					data:formData,
+					async:false,
+					cache: false,
+					processData:false,
+	    			contentType:false,
+					beforeSend: function () {
+						console.log('正在进行，请稍候')
+					},
+					success:function(data){
+						$("#loding").css("display","none");
+					$("#load").css("display","block");
+						var datas=JSON.parse(data).data;
+						var rps=JSON.parse(data)
+						console.log(rps)
+						
+						var ht=''
+						ht='';
+						if(ht==''){
+							$("#Population-list-1 tbody").empty();
+								ht='<tr>'+
+									'<td>'+ rps.columns[0] +'</td>'+
+									'<td>'+ rps.columns[1]+'</td>'+
+									'<td>'+ rps.columns[2]+'</td>'+
+								'</tr>';
+								$("#Population-list-1 tbody").append(ht)
+							}
+						datas.forEach(function(d){
+								ht==''
+								ht='<tr>'+
+									'<td>'+ d[0] +'</td>'+
+									'<td>'+ d[1]+'</td>'+
+									'<td>'+ d[2]+'</td>'+
+								'</tr>';
+							
+							$("#Population-list-1 tbody").append(ht)
+						})
+						
+						
+						var train =[];test=[];epoch=[],
+						datas.forEach(function(d){
+							for(var i =0 ;i<d.length;i++){
+								if(i==1){
+									train.push(d[i]);
+								}else if(i==2){
+									test.push(d[i]);
+								}else{
+									epoch.push(d[i])
+								}
+								
+								
+							}
+						});
+						console.log(train);
+						console.log(test)
+						$("#result-pic3").removeAttr("_echarts_instance_").empty();
+						var myChart3 = echarts.init(document.getElementById('result-pic3'));
+						option = {
+							color:['#f99','#3bb784'],
+							title: {
+								text: '模型迭代误差',
+								left: 'center',
+								y:'8%'
+							},
+							tooltip: {
+								trigger: 'axis',
+								position: 'top',
+								extraCssText:'width:160px;height:50px;',
+								confine:true ,
+								formatter: function(params){
+									
+									return params[0].seriesName+':'+params[0].value+ '<br/>'+params[1].seriesName+':'+params[1].value
+								},
+							},
+								legend: {
+									right: '10%',
+									data: ['训练误差', '测试误差'],
+									y:'15%'
+								},
+								xAxis: {
+									type: 'category',
+									name: '迭代次数',
+									splitLine: {show: false},
+									data: epoch
+								},
+								grid: {
+									left: '3%',
+									right: '14%',
+									bottom: '13%',
+									top:'20%',
+									containLabel: true
+								},
+								yAxis: {
+									type: 'value',
+									name: '误差',
+									min: function(value) {
+									    return value.min ;
+									},
+									max: function(value) {
+									    return value.max ;
+									}
+								},
+								series: [
+									{
+										name: '训练误差',
+										type: 'line',
+										data: train
+									},
+									{
+										name: '测试误差',
+										type: 'line',
+										data: test
+									}
+								]
+							};
+						myChart3.setOption(option);
+						$("#result-pic3").children("div").eq(1).css("display","none")
+					},
+					error:function(){
+						console.log("page3 error");
+						$("#loding").css("display","none");
+						$("#result-pic3").text("训练失败")
+					}
+				})
+				
+			})
+		}
+		
+		// $("#btn2").trigger("click")
+		
+	
+	</script>
+</html>

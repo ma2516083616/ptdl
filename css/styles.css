@@ -1,0 +1,244 @@
+*{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	width: 100%;
+	overflow: hidden;
+	text-decoration: none;
+	list-style: none;
+	
+}
+html,body{
+	width: 100%;
+	height: 100%;
+	background: #F4F5FB;
+}
+@media (min-width: 0px) {
+	
+  .container {
+    max-width: 1340px;
+	font-size: 0.25rem;
+  }
+}
+@media (min-width: 1440px) {
+	
+  .container {
+    max-width: 1340px;
+	font-size: 0.75rem;
+  }
+  .btn{
+	 font-size: 0.75rem;
+  }
+}
+@media (min-width: 1900px) {
+  .container {
+    max-width: 1800px;
+	font-size: inherit;
+  }
+}
+
+.body{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+.nav{
+	display: flex;
+	flex: 0.8;
+	background: #000000;
+	flex-direction: row;
+	padding: 0 200px;
+}
+.datetimepicker{
+	width: 15%;
+}
+.nav li{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex: 1;
+	margin:0 5px;
+	color:#fff;
+}
+.nav li:hover{
+	cursor:pointer;
+}
+.nav li a{
+	display: flex;
+    flex: 1;
+    color: #fff;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+.nav li a:hover{
+	text-decoration: none;
+}
+.container{
+	display: flex;
+	flex: 10;
+	
+}
+
+.nav .active{
+	background: url(../img/bg-nav.png) no-repeat;
+	background-size: 100% 100%;
+}
+.secone{
+	display: none;
+	/* display: flex; */
+	
+	height: 100%;
+	flex-direction: column;
+}
+.sectwo{
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+}
+.check_select{
+	display: flex;
+	flex: 1;
+	margin:20px 0 10px 0;
+	background: #fff;
+	align-items: center;
+}
+.result_box{
+	display: flex;
+	flex: 7;
+	margin-bottom: 15px;
+	background: #fff;
+	flex-direction: column;
+}
+.form-group{
+	display: flex;
+	margin:0;
+	align-items: center;
+	
+}
+label{
+	display: flex;
+	width: auto;
+	align-items: center;
+	
+	margin-bottom: 0;
+}
+.form-control{
+	display: flex;
+	width: 50%;
+	margin-left: 10px;
+}
+
+.daterangepicker{
+	width: 43%;
+}
+.range_inputs{
+	display: flex;
+}
+.range_inputs div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.range_inputs button{
+	width: 25%;
+}
+.daterangepicker .daterangepicker_start_input label, .daterangepicker .daterangepicker_end_input label{
+	margin-left: 0;
+}
+.daterangepicker .ranges .input-mini{
+	margin: 0;
+}
+.daterangepicker .ranges .range_inputs .cancelBtn{
+	background: #ddd;
+	width: 20%;
+}
+.start_byq{
+	width: 30%;
+	height: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.check_select .form-group{
+	display: flex;
+	flex: 0.5;
+	justify-content: center;
+}
+.btn-success {
+    color: #fff;
+    background-color: #4A95C9;
+    border-color: #4A95C9;
+    width: 90%;
+}
+.box_title{
+	display: flex;
+	margin: 30px 0 15px 40px;
+}
+.result-pic,.result-pic2,.result-pic3,.result-pic4{
+	display: flex;
+	flex: 1;
+}
+.btn-success:hover{
+	    color: #fff;
+    background-color: #38809a;
+    border-color: #38809a;
+}
+.dropdown .bootstrap-select .form-control{
+	width: auto;
+}
+#hidden{
+	top: 24%;right: 6%;display: none;position: absolute;z-index: 999; width: auto;
+}
+#loding,#loding2,#loding3,#loding4{
+	width: auto; height: 10%;margin: auto;display: none;
+}
+#load,#load2,#load3,#load4{
+	display: none;
+    width: auto;
+    height: 6%;
+    position: absolute;
+    right: 4%;
+    top: 14%;
+    cursor: pointer;
+    z-index: 999;
+}
+.cover1,.cover2,.cover3,.cover4{
+	display: none;
+    width: 20%;
+    height: 40%;
+    background: #ddd;
+    position: absolute;
+    z-index: 999;
+    left: 40%;
+    top: 29%;
+}
+caption{
+	display: flex;
+}
+caption button{
+	display: flex;
+	flex:1;
+	color: #333;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+	margin:0 5%;
+}
+#Population-list-1,#Population-list-2,#Population-list-3,#Population-list-4{
+	position: absolute;
+    display: none;
+    top: 37%;
+    width: 14%;
+    height: 40%;
+    z-index: 9999;
+    left: 43%;
+	border:none;
+}
+#load_img{
+	display: none;
+}
+.container .active{
+	display: flex;
+	
+}

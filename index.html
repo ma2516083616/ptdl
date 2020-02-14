@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>状态模型</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/jquery.ui.all.css"/>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/daterangepicker-bs3.css"/>
+	<link rel="stylesheet" type="text/css" href="bootstrap-fileinput/css/fileinput.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/styles.css"/>
+	<link rel="stylesheet" type="text/css" href="css/htmleaf-demo.css"/>
+	<link rel="stylesheet" type="text/css" href="css/tableexport.css"/>
+</head>
+<body>
+    <!--#18bc9c-->
+	<div class="body">
+		<ul class="nav nav-pills">
+			<!-- <li class="active"><a href="">状态模型训练</a></li>
+			<li><a href="page2.html">状态分析预测</a></li>
+			<li><a href="page3.html">故障模型训练</a></li>
+			<li><a href="page4.html">故障辅助诊断</a></li> -->
+			<li class="active">状态模型训练</li>
+			<li>状态分析预测</li>
+			<li>故障模型训练</li>
+			<li>故障辅助诊断</li>
+			
+		</ul>
+		<div class="btn-group" role="group" style="display: flex;width: 10%;height: 14.81%;z-index: 9999;position: absolute;right: 3%;">
+				<button id='logout' type="button" class="btn btn-default btn-sm dropdown-toggle" style="color: #fff;top:10%;height: 30%;background: forestgreen;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					test
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" style="width:100%;border: none;top:-15px;background: #ececec;">
+					<li id='log_out' style="display: flex;justify-content: center;cursor: pointer;width:100%;">登出</li>
+				</ul>
+			</div>
+		<div class="container">
+			<div class="secone active">
+				<div class="check_select" style="position: relative;">
+					<span style="display: flex;width: auto;margin-left: 1%;">输入数据:</span>
+					<form id="uploadForm" enctype="multipart/form-data" method="post" class="form-group" style="margin-left: 15px;flex: 0.4;">
+						<input id="file" type="file" name="file_name" />
+						<img id='load_img' src="img/loading1.gif" alt="">
+					</form>	
+					<div class="form-group">
+						<label for="exampleInputPassword1">模型指标:</label>
+							
+							<select name="" class="form-control predict_type">
+								<option value="ch4">甲烷</option>
+								<option value="c2h2">乙炔</option>
+								<option value="c2h4">乙烯</option>
+								<option value="c2h6">乙烷</option>
+								<option value="co">一氧化碳</option>
+								<option value="co2">二氧化碳</option>
+								<option value="h2">氢气</option>
+								<option value="n2">氮气</option>
+								<option value="o2">氧气</option>
+								<option value="totalhydrocarbon">总烃</option>
+							</select>
+						
+					</div>
+					
+					<div class="form-group" style="flex:0.4;">
+						<label for="exampleInputPassword1">训练次数</label>
+							
+							<select name="" class="form-control" id='train_num'>
+								<option value="20">20</option>
+								<option value="100">100</option>
+								<option value="500">500</option>
+								<option value="1000">1000</option>
+								<option value="2000">2000</option>
+								<option value="3000">3000</option>
+								<option value="5000">5000</option>
+								
+							</select>
+						
+					</div>
+					<div class="form-group" style="flex: 0.3;">
+						<label for="exampleInputPassword1">学习率</label>
+							
+							<input type="text" id='lr' value="0.0006" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;">
+						
+					</div>
+					<div class="form-group" style="flex:0.3;">
+						<label for="exampleInputPassword1">历史天数</label>
+							
+							<input type="text" id='input_size' value="100" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;text-align: center;">
+						<!-- <label for="exampleInputPassword1" style="margin: 0;">天</label> -->
+					</div>
+					<div class="form-group" style="flex: 0.4;">
+						<label for="exampleInputPassword1">预测天数</label>
+							
+							<select name="" class="form-control" id='predict_day' style="width: 46%;">
+								<option value="1">1</option>
+								<option value="7">7</option>
+								<option value="30">30</option>
+								<option value="90">90</option>
+								<option value="180">180</option>
+							</select>
+						
+					</div>
+					<div class="start_byq"  style="flex: 0.28;">
+						<button class=" btn btn-small btn-success" id="btn1" style="width: auto;">开始训练</button>
+					</div>
+					<div class="start_byq"  style="flex: 0.28;">
+						<button class=" btn btn-small btn-success" id='save_model' style="width: auto;">保存模型</button>
+					</div>
+					
+					
+					
+				</div>
+				<div class="result_box"  style="position: relative;">
+					
+					<img id="loding" src="img/loading.gif" />
+					<button id='load'  title="导出结果" alt="导出结果" style='border-radius: 4px;'>导出结果</button>
+					<div class="result-pic" id='result-pic'>
+						
+					</div>
+				</div>
+
+				<!-- 隐藏部分 -->
+				<div class="cover1">
+					<img src='img/x.png' style='display:block;width:10%;right:0;top:0;cursor:pointer;position: absolute;' />
+					<p style="display:flex;justify-content: center;margin-top: 20px;font-size: 16px;">文件格式选择</p>
+				</div>
+				<table  id="Population-list-1"  class="table table-striped table-bordered" data-name="cool-table">
+					<tbody >
+						
+					</tbody>
+				</table>
+			</div>
+
+			<div class="secone">
+				<div class="check_select">
+					<span style="display: flex;width: auto;margin-left: 1%;">输入数据:</span>
+					<form id="uploadForm" enctype="multipart/form-data" method="post" class="form-group" style="margin-left: 15px;">
+						<input id="file2" type="file" name="file_name" />
+					</form>	
+					<div class="form-group " style="flex: 0.8;">
+						<label for="exampleInputPassword1">选择模型</label>
+						<select name="" class="form-control" id ="model2" style="width: 70%;">
+						</select>	
+							
+						
+					</div>
+					<div class="form-group" style="flex: 0.9;">
+						<label for="exampleInputPassword1">预测起始日</label>
+							
+						<input style="width: 140px" name="reservation" id="start_time" class="form-control" value="2015-01-01" />
+						
+					</div>
+					
+					<div class="start_byq"  style="flex: 0.3;">
+						<button class=" btn btn-small btn-success" id="btn2" style="width: auto;">开始预测</button>
+					</div>
+					
+					
+				</div>
+				<div class="result_box" style="position: relative;">
+					
+					<img id="loding2" src="img/loading.gif" />
+					<button id='load2'  title="导出结果" alt="导出结果" style='border-radius: 4px;'>导出结果</button>
+					<div class="result-pic2" id='result-pic2'>
+						
+					</div>
+				</div>
+				<!-- 隐藏部分 -->
+				<div class="cover2">
+					<img src='img/x.png' style='display:block;width:10%;right:0;top:0;cursor:pointer;position: absolute;' />
+					<p style="display:flex;justify-content: center;margin-top: 20px;font-size: 16px;">文件格式选择</p>
+				</div>
+				<table  id="Population-list-2"  class="table table-striped table-bordered" data-name="cool-table">
+					<tbody >
+						
+					</tbody>
+				</table>
+			</div>
+
+			<div class="secone">
+				<div class="check_select">
+					<span style="display: flex;width: auto;margin-left: 1%;">输入数据:</span>
+					<form id="uploadForm" enctype="multipart/form-data" method="post" class="form-group" style="margin-left: 5px;flex: 0.3;">
+						<input id="file3" type="file" name="file_name" />
+					</form>	
+					
+					<div class="form-group">
+						<label for="exampleInputPassword1">类别数</label>
+						<input type="text" id='input_size3' disabled="disabled" value="9" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;text-align: center;">
+					</div>
+					<div class="form-group" >
+						<label for="exampleInputPassword1">网络深度</label>
+							<input type="text" id='max_depth3' value="9" style="width: 30%;border: none;border-bottom: 1px solid #ddd;margin-left: 5px;text-align: center;">
+					</div>
+					
+					<div class="form-group">
+						<label for="exampleInputPassword1">迭代次数</label>
+							
+							<select name="" class="form-control" id='train_num3'>
+								<option value="6">6</option>
+								<option value="20">20</option>
+								<option value="100">100</option>
+								<option value="500">500</option>
+								<option value="1000">1000</option>
+								<option value="2000">2000</option>
+								<option value="3000">3000</option>
+								<option value="5000">5000</option>
+							</select>
+						
+					</div>
+					<div class="start_byq"  style="flex: 0.2;">
+						<button class=" btn btn-small btn-success" id='btn3' style="width:auto;">开始训练</button>
+					</div>
+					<div class="start_byq"  style="flex: 0.2;">
+						<button class=" btn btn-small btn-success" id='save_model3' style="width: auto;">保存模型</button>
+					</div>
+					
+					
+				</div>
+				<div class="result_box" style="position: relative;">
+					
+					<img id="loding3" src="img/loading.gif" />
+
+					<button id='load3'  title="导出结果" alt="导出结果" style='border-radius: 4px;'>导出结果</button>
+
+					<div class="result-pic3" id='result-pic3' >
+						
+					</div>
+				</div>
+				<!-- 隐藏部分 -->
+				<div class="cover3">
+					<img src='img/x.png' style='display:block;width:10%;right:0;top:0;cursor:pointer;position: absolute;' />
+					<p style="display:flex;justify-content: center;margin-top: 20px;font-size: 16px;">文件格式选择</p>
+				</div>
+				<table  id="Population-list-3"  class="table table-striped table-bordered" data-name="cool-table">
+					<tbody >
+						
+					</tbody>
+				</table>
+			</div>
+			<div class="secone">
+				<div class="check_select">
+					<span style="display: flex;width: auto;margin-left: 1%;">输入数据:</span>
+					<form id="uploadForm" enctype="multipart/form-data" method="post" class="form-group" style="margin-left:5px;flex: 0.3;">
+						<input id="file4" type="file" name="file_name" />
+					</form>
+					
+					<div class="form-group">
+						<label for="exampleInputPassword1">选择模型</label>
+							
+							<select name="" class="form-control " data-live-search='true'data-width="46%" id ="select_model"  style="width: 70%;">
+								
+								
+							</select>
+						
+					</div>
+					<div class="start_byq"  style="flex: 0.32;">
+						<button class=" btn btn-small btn-success" id="btn4"  style="width: auto;">开始预测</button>
+					</div>
+					
+					
+				</div>
+				<div class="result_box" style="position: relative;">
+					
+					<img id="loding4" src="img/loading.gif" />
+					<button id='load4'  title="导出结果" alt="导出结果" style='border-radius: 4px;'>导出结果</button>
+					<div class="result-pic4" id='result-pic4'>
+							
+					
+					</div>
+					
+				</div>
+				<!-- 隐藏部分 -->
+				<div class="cover4">
+					<img src='img/x.png' style='display:block;width:10%;right:0;top:0;cursor:pointer;position: absolute;' />
+					<p style="display:flex;justify-content: center;margin-top: 20px;font-size: 16px;">文件格式选择</p>
+				</div>
+				<table  id="Population-list-4"  class="table table-striped table-bordered" data-name="cool-table">
+					<tbody >
+						
+					</tbody>
+				</table>
+			</div>
+		
+			
+		</div>
+			
+	</div>
+	
+
+    
+</body>
+<script src="script/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src='script/popper.js'></script>
+<script src="script/jquery-form.js" type="text/javascript" charset="utf-8"></script>
+<script src="script/config.js" type="text/javascript" charset="utf-8"></script>
+<script src="script/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="script/moment.js" type="text/javascript" charset="utf-8"></script>
+<script src="script/bootstrap-datetimepicker.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="script/daterangepicker.js" type="text/javascript" charset="utf-8"></script>
+<script src="bootstrap-fileinput/js/fileinput.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="echarts/dist/echarts.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script src="echarts-gl/dist/echarts-gl.min.js" type="text/javascript" charset="utf-8"></script> -->
+<script src="echarts/theme/dark.js" type="text/javascript" charset="utf-8"></script>
+<!-- <script> document.write('<script src="js/jquery-1.11.0.min.js"><\/script>')</script> -->
+<!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
+<script src="script/xlsx.core.min.js"></script>
+<script src="script/blob.js"></script>
+<script src="script/FileSaver.min.js"></script>
+<script src="script/tableexport.js"></script>
+<script src="script/page2.js"></script>
+<script src="script/page3.js"></script>
+<script src="script/page4.js"></script>
+<script>
+
+	$("#start_time").datetimepicker({
+		language:  'fr', // 语言选择中文
+		autoclose: true,
+		startView: 'month', // 进来是月
+		minView: 2,// 可以看到小时
+		minuteStep:1, //分钟间隔为1分
+		format: 'yyyy-mm-dd',// 年月日时分秒
+		clearBtn:false,
+		todayBtn:true,
+		endDate:new Date()
+
+	})
+	
+	byqResult();
+	function byqResult(){
+			var myform=undefined;
+			var myform= new FormData()
+			var start_time=20150101;
+			var end_time=20191206;
+			var urs;
+			urs=file_name.name+'_'+$(".predict_type").val()+'_'+start_time+'_'+end_time+'_'+$("#predict_day").val()+'_'+$("#input_size").val()+'_'+$("#train_num").val()+'_'+$("#lr").val()
+			saveModel(urs);
+			function saveModel(model){
+				console.log(model);
+				$("#save_model").click(function(){
+					window.open(rootUrl+'core/export2/'+model)
+					
+				})
+			}
+		$("#btn1").off().click(function(){
+			var myform=undefined;
+			var myform= new FormData()
+			$("#result-pic").removeAttr("_echarts_instance_").empty();
+            myform.append('file_name', $('#file')[0].files[0]);	
+            myform.append('start_time',start_time);
+            myform.append('end_time',end_time);
+			myform.append('forecast',$(".predict_type").val());
+			myform.append('predict_day',$("#predict_day").val());
+			myform.append('input_size',$("#input_size").val());
+			myform.append('train_num',$("#train_num").val());
+			myform.append('lr',$("#lr").val());
+			$("#loding").css("display","block");
+			$.ajax({
+				type:'post',
+				url:rootUrl+'core/tsmr',
+				data:myform,
+				cache: false,
+				processData:false,//告诉jquery不要去处理请求的数据格式
+    			contentType:false,//告诉jquery不要设置请求头的类型
+				beforeSend: function () {
+					console.log('正在进行，请稍候')
+				},
+				success:function(data){
+					$("#loding").css("display","none");
+					$("#load").css("display","block");
+					datas=JSON.parse(data);
+					var dsts=datas.data;
+					console.log(datas);
+					console.log(dsts)
+					var ht='';
+					ht='';
+					var epoch=[]
+					if(ht==''){
+						$("#Population-list-1 tbody").empty();
+							ht='<tr>'+
+								'<td>'+ datas.columns[3] +'</td>'+
+								'<td>'+ datas.columns[1]+'</td>'+
+								'<td>'+ datas.columns[2]+'</td>'+
+							'</tr>';
+							$("#Population-list-1 tbody").append(ht)
+						}
+						dsts.forEach(function(d){
+								ht==''
+								ht='<tr>'+
+									'<td>'+ d[3] +'</td>'+
+									'<td>'+ d[1]+'</td>'+
+									'<td>'+ d[2]+'</td>'+
+								'</tr>';
+								epoch.push(d[3])
+							$("#Population-list-1 tbody").append(ht)
+						})
+						
+						
+						
+
+					
+					//var epoch=dsts.time
+					console.log(epoch)
+					var train =[];test=[];
+					dsts.forEach(function(d){
+						for(var i =0 ;i<d.length;i++){
+							if(i==1){
+								train.push(d[i]);
+							}else if(i==2){
+								test.push(d[i]);
+							}
+							
+							
+						}
+					});
+					var myChart1 = echarts.init(document.getElementById('result-pic'));
+					option = {
+						color:['#e15df4','#68e09e'],
+						title: {
+							text: '模型拟合结果',
+							left: 'center',
+							y:'8%'
+						},
+						
+						tooltip: {
+							trigger: 'axis',
+							extraCssText:'width:160px;height:50px;',
+							position: 'top',
+							confine:true ,
+							formatter: function(params){
+								
+								return params[0].seriesName+":"+params[0].value+'<br />'+params[1].seriesName+":"+params[1].value
+							},
+						},
+						legend: {
+							right: '10%',
+							data: ['实际值', '预测值'],
+							y:'15%'
+						},
+						xAxis: {
+							type: 'category',
+							name: '日期',
+							splitLine: {show: false},
+							data: epoch
+						},
+						grid: {
+							left: '13%',
+							right: '14%',
+							bottom: '13%',
+							top:'20%',
+							containLabel: true
+						},
+						yAxis: {
+							type: 'value',
+							name: '指标值',
+						},
+						series: [
+							{
+								name: '实际值',
+								type: 'line',
+								data: train
+								//data:[1,2,3,4,5,6,7,8,9]
+							},
+							{
+								name: '预测值',
+								type: 'line',
+								data: test
+								//data:[1,2,3,4,4,5,6,8]
+							}
+						]
+					};
+					myChart1.setOption(option);
+					$("#result-pic").children("div").eq(1).css("display","none")
+				},
+				error:function(){
+					console.log("index error")
+					
+					$("#loding").css("display","none");
+					$("#result-pic").text("训练失败")
+				}
+			})
+			
+		})
+	}
+	
+
+
+
+</script>
+	
+</html>
